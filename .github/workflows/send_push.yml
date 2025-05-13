@@ -1,0 +1,28 @@
+# filepath: /workspaces/Bible-Teaching/.github/workflows/send_push.yml
+name: Daily Push Notification
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # 6 AM UTC every day
+  workflow_dispatch: # Manual trigger option
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run push script
+        env:
+          ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
+          ONESIGNAL_API_KEY: ${{ secrets.ONESIGNAL_API_KEY }}
+        run: python send_push.py
